@@ -1,6 +1,9 @@
 # Background
-
 TODO
+
+![alt text](https://raw.githubusercontent.com/mrperkett/mnist-digits-visualization/images/MNIST-tSNE_mapping.png)
+
+
 
 # Setup
 ## Install code

@@ -1,7 +1,7 @@
 # Background
 TODO
 
-![alt text](https://raw.githubusercontent.com/mrperkett/mnist-digits-visualization/images/MNIST-tSNE_mapping.png)
+![MNIST digits mapped to two dimensions using t-SNE](/images/MNIST-tSNE_mapping.png)
 
 
 

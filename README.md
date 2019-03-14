@@ -3,7 +3,6 @@ t-SNE and UMAP are popular dimensional reduction algorithms that allow you to vi
 
 ## Gallery
 The MNIST dataset contains 70,000 handwritten digits, which have been scanned and resized to 28x28 pixel images.  A random subset of the handwritten digits is provided below. 
-![MNIST handwritten digits](/images/MNIST-tSNE_mapping.png)
 
 Each image can be represented as a vector of length 28 x 28 = 784, where the pixel values correspond to the level of color for each pixel (0.0 for white to 1.0 for black).  Using dimensional reduction algorithms, we can map each vector from 784 dimensions down to two dimensions for visualization.
 

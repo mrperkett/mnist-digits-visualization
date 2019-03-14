@@ -27,12 +27,18 @@ TODO: add the best of the references that I've found
 
 
 # Setup
-## Install code
+## Installing
+Clone the repository.
 ```
 git clone https://github.com/mrperkett/mnist-digits-visualization mnist-digits-visualization
 cd mnist-digits-visualization/
-# TODO: add pyenv commands
-sudo pip install -e .
+```
+
+Install requirements in a python virtual environment.
+```
+python3 -m venv testenv
+. testenv/bin/activate
+python3 -m pip install -r requirements.txt
 ```
 
 ## build bhtsne
@@ -43,11 +49,9 @@ g++ sptree.cpp tsne.cpp tsne_main.cpp -o bh_tsne -O2
 cd ../
 ```
 
-## install UMAP
-TODO
-
 ## Download MNIST data
 ```
+cd ../
 mkdir data
 cd data/
 

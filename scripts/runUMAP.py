@@ -2,30 +2,32 @@
 """
 """
 
+import os
+import sys
 import time
 
 import numpy as np
 import umap
+
+sys.path.append(os.path.abspath(os.path.join((os.path.dirname(__file__)), "..")))
+from utils.mnist import read_mnist_data
 
 
 def main():
     """
     """
     # user parameters
-    inp_fp = "data-training-60k.tsv"
-    out_fp = "out-training-60k.tsv"
+    mnist_data_folder = "data"
+    out_base = "test"
+#    inp_fp = "data-training-60k.tsv"
+#    out_fp = "out-training-60k.tsv"
 #    inp_fp = "data-small.tsv"
 #    out_fp = "out.tsv"
 
     # load data
     print("\nReading data...")
-    data = []
-    with open(inp_fp, "r") as inp_file:
-        for line in inp_file:
-            if line[0] == "#":
-                continue
-            data.append(map(float, line.rstrip("\n\r").split("\t")))
-    data = np.array(data)
+    labels, images, data = read_mnist_data(dataset="training", path=mnist_data_folder, 
+            num_to_keep=10000)
 
     # run UMAP
     print("\nRunning UMAP...")
@@ -35,11 +37,18 @@ def main():
     print("\ttime: %2.2f secs" % dt)
 
 
-    # save
     print("\nWriting results to file...")
+    # UMAP projection
+    out_fp = "%s-umap_projection.tsv" % out_base
     with open(out_fp, "w") as out_file:
         for x, y in embedding:
             out_file.write("%f\t%f\n" % (x, y))
+
+    # labels
+    out_fp = "%s-labels.txt" % out_base
+    with open(out_fp, "w") as out_file:
+        for label in labels:
+            out_file.write("%s\n" % label)
 
 
     print("\nDone.")

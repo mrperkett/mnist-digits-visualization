@@ -1,7 +1,9 @@
 #! /usr/bin/env python
 """
+An example script demonstrating how to run UMAP on the MNIST data set.
 """
 
+import argparse
 import os
 import sys
 import time
@@ -13,39 +15,63 @@ sys.path.append(os.path.abspath(os.path.join((os.path.dirname(__file__)), ".."))
 from utils.mnist import read_mnist_data
 
 
+def parse_args(arg_list):
+    """
+    Parse command line arguments using argparse
+    """
+    parser = argparse.ArgumentParser()
+
+    # user arguments
+    parser.add_argument("--data-dir", "-d", dest="mnist_data_dir", type=str, required=True,
+            help="Directory containing the downloaded MNIST digits data.")
+    parser.add_argument("--data-set", "-s", dest="mnist_data_set", type=str, required=False, 
+            default="all", help="Data type: 'training', 'test', or 'all'")
+    parser.add_argument("-n", dest="num_to_keep", type=int, default=None, required=False,
+            help="Read the first n digits.  Default: read all digits for the given data type.")
+    parser.add_argument("--out-base", "-o", dest="out_base", type=str, required=True,
+            help="The output file base: 1) <out_base>-umap_projection.tsv 2) <out_base>-labels.txt")
+
+    # arguments passed through to UMAP
+    parser.add_argument("--n_neighbors", dest="n_neighbors", type=int, required=False,
+            default=10, help="UMAP n_neighbors")
+    parser.add_argument("--min_dist", dest="min_dist", type=float, required=False,
+            default=0.001, help="UMAP min_dist")
+    parser.add_argument("--metric", dest="metric", type=str, required=False,
+            default="correlation", help="UMAP metric")
+
+    args = parser.parse_args(arg_list)
+    
+
+    return args
+
+
 def main():
     """
     """
-    # user parameters
-    mnist_data_folder = "data"
-    out_base = "test"
-#    inp_fp = "data-training-60k.tsv"
-#    out_fp = "out-training-60k.tsv"
-#    inp_fp = "data-small.tsv"
-#    out_fp = "out.tsv"
+    args = parse_args(sys.argv[1:])
 
-    # load data
     print("\nReading data...")
-    labels, images, data = read_mnist_data(dataset="training", path=mnist_data_folder, 
-            num_to_keep=10000)
+    labels, images, data = read_mnist_data(dataset=args.mnist_data_set, path=args.mnist_data_dir, 
+            num_to_keep=args.num_to_keep)
 
-    # run UMAP
     print("\nRunning UMAP...")
     start_time = time.time()
-    embedding = umap.UMAP(n_neighbors=10, min_dist=0.001, metric='correlation').fit_transform(data)
+    embedding = umap.UMAP(  n_neighbors=args.n_neighbors,
+                            min_dist=args.min_dist, 
+                            metric=args.metric ).fit_transform(data)
     dt = time.time() - start_time
     print("\ttime: %2.2f secs" % dt)
 
 
     print("\nWriting results to file...")
-    # UMAP projection
-    out_fp = "%s-umap_projection.tsv" % out_base
+    # projection
+    out_fp = "%s-umap_projection.tsv" % args.out_base
     with open(out_fp, "w") as out_file:
         for x, y in embedding:
             out_file.write("%f\t%f\n" % (x, y))
 
     # labels
-    out_fp = "%s-labels.txt" % out_base
+    out_fp = "%s-labels.txt" % args.out_base
     with open(out_fp, "w") as out_file:
         for label in labels:
             out_file.write("%s\n" % label)

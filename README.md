@@ -65,6 +65,46 @@ cd ../
 ```
 
 # Running t-SNE
+```
+usage: runTSNE.py [-h] --data-dir MNIST_DATA_DIR [--data-set MNIST_DATA_SET]
+                  [-n NUM_TO_KEEP] --out-base OUT_BASE
+                  [--perplexity PERPLEXITY] [--angle ANGLE] [--metric METRIC]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --data-dir MNIST_DATA_DIR, -d MNIST_DATA_DIR
+                        Directory containing the downloaded MNIST digits data.
+  --data-set MNIST_DATA_SET, -s MNIST_DATA_SET
+                        Data type: 'training', 'test', or 'all'
+  -n NUM_TO_KEEP        Read the first n digits. Default: read all digits for
+                        the given data type.
+  --out-base OUT_BASE, -o OUT_BASE
+                        The output file base: 1)
+                        <out_base>-tsne_projection.tsv 2)
+                        <out_base>-tsne_labels.txt
+  --perplexity PERPLEXITY
+                        tSNE perplexity
+  --angle ANGLE         tSNE angle
+  --metric METRIC       tSNE metric
+```
+
+Example call on small subset of MNIST dataset
+```
+python3 ./mnist-digits-visualization/scripts/runTSNE.py -d data/ -s all -n 5000 -o test
+```
+
+If all goes well, you should see output similar to that below, and two output files will be generated (`test-tsne_projection.tsv` and `test-tsne_labels.txt`).  Example Jupyter notebooks are provided in the `notesbooks/` folder that can be used to generate plots showing the t-SNE projection.
+```
+Reading data...
+
+Running t-SNE...
+        Time: 192.441722 seconds
+
+Writing results to file...
+
+Done.
+```
+
 
 # Running UMAP
 ```
@@ -96,7 +136,7 @@ Example call on small subset of MNIST dataset
 python3 ./mnist-digits-visualization/scripts/runUMAP.py -d data/ -s all -n 5000 -o test
 ```
 
-If all goes well, you should see output similar to that below, and two output files will be generated (`example-umap_projection.tsv` and `test-labels.txt`).  Example Jupyter notebooks are provided in the `notesbooks/` folder that can be used to generate plots showing the UMAP projection.
+If all goes well, you should see output similar to that below, and two output files will be generated (`test-umap_projection.tsv` and `test-umap_labels.txt`).  Example Jupyter notebooks are provided in the `notesbooks/` folder that can be used to generate plots showing the UMAP projection.
 ```
 Reading data...
 

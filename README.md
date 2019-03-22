@@ -89,7 +89,7 @@ optional arguments:
 
 Example call on small subset of MNIST dataset
 ```
-python3 ./mnist-digits-visualization/scripts/runTSNE.py -d data/ -s all -n 5000 -o test
+python3 ./mnist-digits-visualization/scripts/runTSNE.py -d data/ -s all -n 5000 -o tsne-test
 ```
 
 If all goes well, you should see output similar to that below, and two output files will be generated (`test-tsne_projection.tsv` and `test-tsne_labels.txt`).  Example Jupyter notebooks are provided in the `notesbooks/` folder that can be used to generate plots showing the t-SNE projection.
@@ -132,7 +132,7 @@ optional arguments:
 
 Example call on small subset of MNIST dataset
 ```
-python3 ./mnist-digits-visualization/scripts/runUMAP.py -d data/ -s all -n 5000 -o test
+python3 ./mnist-digits-visualization/scripts/runUMAP.py -d data/ -s all -n 5000 -o umap-test
 ```
 
 If all goes well, you should see output similar to that below, and two output files will be generated (`test-umap_projection.tsv` and `test-umap_labels.txt`).  Example Jupyter notebooks are provided in the `notesbooks/` folder that can be used to generate plots showing the UMAP projection.

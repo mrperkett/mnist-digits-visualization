@@ -1,6 +1,6 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python
 """
-A script demonstrating how to call t-SNE on MNIST digits
+An example script demonstrating how to run t-SNE using sklearn on the MNIST data set.
 """
 
 import argparse
@@ -11,76 +11,81 @@ import time
 import numpy as np
 import sklearn.manifold
 
-def parse_input(inp_fp):
+sys.path.append(os.path.abspath(os.path.join((os.path.dirname(__file__)), "..")))
+from utils.mnist import read_mnist_data
+
+
+def parse_args(arg_list):
     """
+    Parse command line arguments using argparse
     """
-    data = []
-    prev_row_len = None
-    with open(inp_fp, "r") as inp_file:
-        for line in inp_file:
-            if line.startswith("#"):
-                continue
+    parser = argparse.ArgumentParser()
 
-            row = list(map(float, line.rstrip("\n\r").split("\t")))
+    # user arguments
+    parser.add_argument("--data-dir", "-d", dest="mnist_data_dir", type=str, required=True,
+            help="Directory containing the downloaded MNIST digits data.")
+    parser.add_argument("--data-set", "-s", dest="mnist_data_set", type=str, required=False, 
+            default="all", help="Data type: 'training', 'test', or 'all'")
+    parser.add_argument("-n", dest="num_to_keep", type=int, default=None, required=False,
+            help="Read the first n digits.  Default: read all digits for the given data type.")
+    parser.add_argument("--out-base", "-o", dest="out_base", type=str, required=True,
+            help="The output file base: 1) <out_base>-tsne_projection.tsv 2) <out_base>-tsne_labels.txt")
 
-            if prev_row_len:
-                assert len(row) == prev_row_len
-            else:
-                prev_row_len = len(row)
+    # arguments passed through to tSNE
+    parser.add_argument("--perplexity", dest="perplexity", type=int, required=False,
+            default=30, help="tSNE perplexity")
+    parser.add_argument("--angle", dest="angle", type=float, required=False,
+            default=0.5, help="tSNE angle")
+    parser.add_argument("--metric", dest="metric", type=str, required=False,
+            default="euclidean", help="tSNE metric")
 
-            data.append(row)
+    args = parser.parse_args(arg_list)
+    
 
-    return np.array(data)
+    return args
 
 
 def main():
     """
-    Usage: ./runTSNE.py <inp_fp>
-
-        inp_fp: input file path for raw data (tab-separated values; 1 vector per row)
     """
-    # command line arguments
-    if len(sys.argv) != 3:
-        print(main.__doc__)
-        sys.exit(1)
-
-    inp_fp = sys.argv[1]
-    out_fp = sys.argv[2]
-
-    # user parameters
-    perplexity = 30
-    angle = 0.5
-    metric = "euclidean"
+    args = parse_args(sys.argv[1:])
 
     # make output directory if it doesn't exist
-    out_dir = os.path.dirname(out_fp)
-    if not os.path.isdir(out_dir):
+    out_dir = os.path.dirname(args.out_base)
+    if out_dir != "" and not os.path.isdir(out_dir):
         os.makedirs(out_dir)
 
-
-    print("\nParsing input file...")
-    data = parse_input(inp_fp)
+    print("\nReading data...")
+    labels, images, data = read_mnist_data(dataset=args.mnist_data_set, path=args.mnist_data_dir, 
+            num_to_keep=args.num_to_keep)
 
 
     print("\nRunning t-SNE...")
     start_time = time.time()
 
-    tsne = sklearn.manifold.TSNE(n_components=2, perplexity=perplexity, early_exaggeration=12.0, 
+    tsne = sklearn.manifold.TSNE(n_components=2, perplexity=args.perplexity, early_exaggeration=12.0,
                 learning_rate=200.0, n_iter=5000, n_iter_without_progress=300, min_grad_norm=1e-07,
-                metric=metric, init='pca', verbose=0, random_state=0, method="barnes_hut",
-                angle=angle)
+                metric=args.metric, init='pca', verbose=0, random_state=0, method="barnes_hut",
+                angle=args.angle)
     tsne_projection = tsne.fit_transform(data)
 
     dt = time.time() - start_time
     print("\tTime: %f seconds" % dt)
 
-    
-   # write to file
-#   out_fp = "%s-projection-angle=%f_perplexity=%f.tsv" % (out_base, angle, perplexity)
+
+    print("\nWriting results to file...")
+    # projection
+    out_fp = "%s-tsne_projection.tsv" % args.out_base
     with open(out_fp, "w") as out_file:
-       out_file.write("#TSNE1\tTSNE2\n")
-       for tsne1, tsne2 in tsne_projection:
-           out_file.write("%f\t%f\n" % (tsne1, tsne2))
+        out_file.write("#TSNE1\tTSNE2\n")
+        for x, y in tsne_projection:
+            out_file.write("%f\t%f\n" % (x, y))
+
+    # labels
+    out_fp = "%s-tsne_labels.txt" % args.out_base
+    with open(out_fp, "w") as out_file:
+        for label in labels:
+            out_file.write("%s\n" % label)
 
 
     print("\nDone.")

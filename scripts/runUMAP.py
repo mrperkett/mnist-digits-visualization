@@ -50,6 +50,12 @@ def main():
     """
     args = parse_args(sys.argv[1:])
 
+    # make output directory if it doesn't exist
+    out_dir = os.path.dirname(args.out_base)
+    if out_dir != "" and not os.path.isdir(out_dir):
+        os.makedirs(out_dir)
+
+
     print("\nReading data...")
     labels, images, data = read_mnist_data(dataset=args.mnist_data_set, path=args.mnist_data_dir, 
             num_to_keep=args.num_to_keep)
@@ -67,11 +73,12 @@ def main():
     # projection
     out_fp = "%s-umap_projection.tsv" % args.out_base
     with open(out_fp, "w") as out_file:
+        out_file.write("#UMAP1\tUMAP2\n")
         for x, y in embedding:
             out_file.write("%f\t%f\n" % (x, y))
 
     # labels
-    out_fp = "%s-labels.txt" % args.out_base
+    out_fp = "%s-umap_labels.txt" % args.out_base
     with open(out_fp, "w") as out_file:
         for label in labels:
             out_file.write("%s\n" % label)

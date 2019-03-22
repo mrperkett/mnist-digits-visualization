@@ -83,6 +83,9 @@ def main():
         for label in labels:
             out_file.write("%s\n" % label)
 
+    # images
+    out_fp = "%s-umap_images.npy" % args.out_base
+    np.save(out_fp, images)
 
     print("\nDone.")
 

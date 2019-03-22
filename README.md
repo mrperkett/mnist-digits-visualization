@@ -22,9 +22,16 @@ And by replacing the colored points from the t-SNE plot with their corresponding
 
 t-SNE, UMAP, and other dimensional reduction techniques are useful in a variety of fields including bioinformatics, where we use them to  visualize the results from single cell RNA-Seq experiments.  Each cell is a high dimensional data point with the expression level of each gene as its coordinates.
 
-## References
-TODO: add the best of the references that I've found
+## Resources
+There are a lot of good resources for understanding t-SNE and UMAP.  I've added some below that were useful to me.
 
+* [t-SNE paper](https://lvdmaaten.github.io/publications/papers/JMLR_2008.pdf)
+* [UMAP paper](https://arxiv.org/pdf/1802.03426.pdf)
+* [UMAP read the docs (how it works)](https://umap-learn.readthedocs.io/en/latest/how_umap_works.html)
+* [Laurens van der Maaten's webpage for t-SNE](https://lvdmaaten.github.io/tsne/)
+* [Google tech talk on t-SNE by Laurens van der Maaten](https://www.youtube.com/watch?v=RJVL80Gg3lA)
+* [Nice summary blog post on t-SNE and other techniques](http://colah.github.io/posts/2014-10-Visualizing-MNIST/)
+* [Nice summary on how to use t-SNE effectively and a discussion of how to interpret the projection](https://distill.pub/2016/misread-tsne/)
 
 # Setup
 ## Installing
@@ -39,14 +46,6 @@ Install requirements in a python virtual environment.
 python3 -m venv testenv
 . testenv/bin/activate
 python3 -m pip install -r requirements.txt
-```
-
-## build bhtsne
-```
-git clone https://github.com/lvdmaaten/bhtsne.git bhtsne
-cd bhtsne/
-g++ sptree.cpp tsne.cpp tsne_main.cpp -o bh_tsne -O2
-cd ../
 ```
 
 ## Download MNIST data
